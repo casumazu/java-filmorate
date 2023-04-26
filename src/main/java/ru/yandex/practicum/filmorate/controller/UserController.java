@@ -57,7 +57,7 @@ public class UserController {
         if (!user.getEmail().contains("@") || user.getEmail() == null) {
             throw new ValidationException("Некорректный e-mail: " + user.getEmail());
         }
-        if (user.getLogin() == null || user.getLogin().indexOf(' ') >= 0) {
+        if (user.getLogin() == null || user.getLogin().isEmpty() || user.getLogin().indexOf(' ') >= 0) {
             throw new ValidationException("Некорректный логин: " + user.getLogin());
         }
         if (user.getBirthday().isAfter(LocalDate.now())) {
