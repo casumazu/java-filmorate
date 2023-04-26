@@ -54,16 +54,16 @@ public class UserController {
     }
 
     private boolean isValidUser(User user) {
-        if (!user.getEmail().contains("@")) {
+        if (!user.getEmail().contains("@") || user.getEmail() == null) {
             throw new ValidationException("Некорректный e-mail: " + user.getEmail());
         }
-        if ((user.getLogin().isEmpty()) || (user.getLogin().contains(" "))) {
+        if (user.getLogin() == null || user.getLogin().indexOf(' ') >= 0) {
             throw new ValidationException("Некорректный логин: " + user.getLogin());
         }
         if (user.getBirthday().isAfter(LocalDate.now())) {
             throw new ValidationException("Некорректная дата рождения: " + user.getBirthday());
         }
-        if (user.getName().isEmpty()) {
+        if (user.getName().isEmpty() || user.getName() == null) {
             user.setName(user.getLogin());
         }
         return true;

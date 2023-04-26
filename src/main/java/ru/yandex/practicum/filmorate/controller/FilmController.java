@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -53,19 +54,24 @@ public class FilmController {
         return film;
     }
 
-    private boolean isValid(Film film) {
-        if (film.getName().isEmpty()) {
+    public boolean isValid(@NonNull Film film) throws ValidationException {
+        if (film.getName() == null || film.getName().isBlank()) {
             throw new ValidationException("Название фильма не должно быть пустым!");
         }
-        if ((film.getDescription().length()) > 200 || (film.getDescription().isEmpty())) {
-            throw new ValidationException("Описание фильма больше 200 символов или пустое: " + film.getDescription().length());
+
+        if (film.getDescription().length() > 200 || (film.getDescription().isEmpty()) ) {
+            throw new ValidationException("Описание фильма должно быть пустым и не больше 200 символов: "
+                    + film.getDescription().length());
         }
-        if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
+
+        if ((film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28)))) {
             throw new ValidationException("Некорректная дата релиза фильма: " + film.getReleaseDate());
         }
-        if (film.getDuration() <= 0) {
+
+        if (film.getDuration() < 0) {
             throw new ValidationException("Продолжительность должна быть положительной: " + film.getDuration());
         }
         return true;
     }
+
 }
