@@ -12,8 +12,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 @RestController
 @Slf4j
+@RequestMapping("/films")
 public class FilmController {
     private Map<Integer, Film> films;
     private Integer id;
@@ -23,14 +25,14 @@ public class FilmController {
         films = new HashMap<>();
     }
 
-    @GetMapping("/films")
+    @GetMapping
     public List<Film> returnFilms() {
         log.trace("Возвращены все фильмы.");
         return new ArrayList<>(films.values());
     }
 
-    @ResponseBody
-    @PostMapping(value = "/films")
+
+    @PostMapping
     public Film add(@Valid @RequestBody Film film) {
         log.info("Получен POST-запрос к эндпоинду -> /films на добавление фильм с ID{}", id + 1);
         if (isValid(film)) {
@@ -40,7 +42,6 @@ public class FilmController {
         return film;
     }
 
-    @ResponseBody
     @PutMapping(value = "/films")
     public Film update(@Valid @RequestBody Film film) {
         log.info("Получен PUT-запрос к эндпоинту -> /films на обновление фильма с ID={}", film.getId());
