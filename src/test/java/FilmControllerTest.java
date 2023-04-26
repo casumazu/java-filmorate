@@ -20,10 +20,11 @@ public class FilmControllerTest {
         film = Film.builder()
                 .name("Lorem ipsum")
                 .description("Lorem ipsum dolor sit amet")
-                .releaseDate(LocalDate.of(1997,6,26))
+                .releaseDate(LocalDate.of(1997, 6, 26))
                 .duration(114)
                 .build();
     }
+
     @Test
     public void addFilm() {
         Film film1 = filmController.add(film);
@@ -37,6 +38,7 @@ public class FilmControllerTest {
         assertThrows(ValidationException.class, () -> filmController.add(film));
         assertEquals(0, filmController.returnFilms().size(), "Список должен быть пустым");
     }
+
     @Test
     public void addFilmWhenDurationNegative() {
         film.setDuration(-1);
@@ -53,7 +55,7 @@ public class FilmControllerTest {
 
     @Test
     public void dateFilmMIN() {
-        film.setReleaseDate(LocalDate.of(1796,6,15));
+        film.setReleaseDate(LocalDate.of(1796, 6, 15));
         assertThrows(ValidationException.class, () -> filmController.add(film));
         assertEquals(0, filmController.returnFilms().size(), "Список должен быть пустым");
     }
