@@ -28,34 +28,34 @@ public class UserControllerTest {
     public void addUser() {
         User user1 = userController.create(user);
         assertEquals(user,user1,"Пользователи должны совпадать");
-        assertEquals(1, userController.returnUsers().size(),"Размер списка должен быть равен 1");
+        assertEquals(1, userController.getUsers().size(),"Размер списка должен быть равен 1");
     }
 
     @Test
     public void addUserWhenLoginIsNull() {
         user.setLogin("");
         assertThrows(ValidationException.class, () -> userController.create(user));
-        assertEquals(0, userController.returnUsers().size(), "Список должен быть пустым");
+        assertEquals(0, userController.getUsers().size(), "Список должен быть пустым");
     }
 
     @Test
     public void addEmailNotDOG() {
         user.setEmail("sergeev.bog.yandex.ru");
         assertThrows(ValidationException.class, () -> userController.create(user));
-        assertEquals(0, userController.returnUsers().size(), "Список должен быть пустым");
+        assertEquals(0, userController.getUsers().size(), "Список должен быть пустым");
     }
 
     @Test
     public void addUserFromTheFuture() {
         user.setBirthday(LocalDate.now().plusYears(1));
         assertThrows(ValidationException.class, () -> userController.create(user));
-        assertEquals(0, userController.returnUsers().size(), "Список должен быть пустым");
+        assertEquals(0, userController.getUsers().size(), "Список должен быть пустым");
     }
 
     @Test
     public void addUserWithLoginSpace() {
         user.setLogin("casu mazu");
         assertThrows(ValidationException.class, () -> userController.create(user));
-        assertEquals(0, userController.returnUsers().size(), "Список должен быть пустым");
+        assertEquals(0, userController.getUsers().size(), "Список должен быть пустым");
     }
 }

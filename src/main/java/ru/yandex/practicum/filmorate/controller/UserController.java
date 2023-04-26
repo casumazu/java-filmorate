@@ -25,7 +25,7 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> returnUsers() {
+    public List<User> getUsers() {
         log.info("Получен GET-запрос на получение данных всех пользователей");
         return new ArrayList<>(users.values());
     }

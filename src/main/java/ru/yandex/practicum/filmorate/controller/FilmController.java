@@ -26,7 +26,7 @@ public class FilmController {
     }
 
     @GetMapping
-    public List<Film> returnFilms() {
+    public List<Film> getFilms() {
         log.trace("Возвращены все фильмы.");
         return new ArrayList<>(films.values());
     }
