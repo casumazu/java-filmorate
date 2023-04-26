@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +23,7 @@ public class UserController {
         users = new HashMap<>();
     }
 
-    @GetMapping (value = "/users")
+    @GetMapping ("/users")
     public List<User> returnUsers() {
         log.info("Получен GET-запрос на получение данных всех пользователей");
         return new ArrayList<>(users.values());
@@ -30,7 +31,7 @@ public class UserController {
 
     @ResponseBody
     @PostMapping(value = "/users")
-    public User add(@RequestBody User user) {
+    public User add(@Valid @RequestBody User user) {
         log.info("Получен POST-запрос к эндпоинту -> /users, на добавление пользователя с ID={}", id + 1);
         if (isValidUser(user)) {
             user.setId(++id);
@@ -41,7 +42,7 @@ public class UserController {
 
     @ResponseBody
     @PutMapping(value = "/users")
-    public User update(@RequestBody User user) {
+    public User update(@Valid @RequestBody User user) {
         log.info("Получен PUT-запрос к эндпоинту: '/users' на обновление пользователя с ID={}", user.getId());
         if (user.getId() == null) {
             user.setId(id + 1);

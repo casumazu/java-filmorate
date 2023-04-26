@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,14 +16,14 @@ import java.util.Map;
 @Slf4j
 public class FilmController {
     private Map<Integer, Film> films;
-    private Integer id = 1;
+    private Integer id;
 
     public FilmController() {
         id = 0;
         films = new HashMap<>();
     }
 
-    @GetMapping(value = "/films")
+    @GetMapping("/films")
     public List<Film> returnFilms() {
         log.trace("Возвращены все фильмы.");
         return new ArrayList<>(films.values());
@@ -30,7 +31,7 @@ public class FilmController {
 
     @ResponseBody
     @PostMapping(value = "/films")
-    public Film add(@RequestBody Film film) {
+    public Film add(@Valid @RequestBody Film film) {
         log.info("Получен POST-запрос к эндпоинду -> /films на добавление фильм с ID{}", id + 1);
         if (isValid(film)) {
             film.setId(++id);
@@ -41,7 +42,7 @@ public class FilmController {
 
     @ResponseBody
     @PutMapping(value = "/films")
-    public Film update(@RequestBody Film film) {
+    public Film update(@Valid @RequestBody Film film) {
         log.info("Получен PUT-запрос к эндпоинту -> /films на обновление фильма с ID={}", film.getId());
         if (film.getId() == null) {
             film.setId(id + 1);
