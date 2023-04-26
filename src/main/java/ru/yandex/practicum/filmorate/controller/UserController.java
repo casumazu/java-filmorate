@@ -31,7 +31,7 @@ public class UserController {
     }
 
     @PostMapping
-    public User add(@Valid @RequestBody User user) {
+    public User create(@Valid @RequestBody User user) {
         log.info("Получен POST-запрос к эндпоинту -> /users, на добавление пользователя с ID={}", id + 1);
         if (isValidUser(user)) {
             user.setId(++id);

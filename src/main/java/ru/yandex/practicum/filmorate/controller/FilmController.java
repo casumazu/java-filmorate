@@ -32,7 +32,7 @@ public class FilmController {
     }
 
     @PostMapping
-    public Film add(@Valid @RequestBody Film film) {
+    public Film create(@Valid @RequestBody Film film) {
         log.info("Получен POST-запрос к эндпоинду -> /films на добавление фильм с ID{}", id + 1);
         if (isValid(film)) {
             film.setId(++id);

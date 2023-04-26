@@ -27,7 +27,7 @@ public class FilmControllerTest {
 
     @Test
     public void addFilm() {
-        Film film1 = filmController.add(film);
+        Film film1 = filmController.create(film);
         assertEquals(film, film1, "Фильмы должны совпадать");
         assertEquals(1, filmController.returnFilms().size(), "В списке должен быть один фильм");
     }
@@ -35,42 +35,42 @@ public class FilmControllerTest {
     @Test
     public void setDurationFilmIs0() {
         film.setDuration(0);
-        assertThrows(ValidationException.class, () -> filmController.add(film));
+        assertThrows(ValidationException.class, () -> filmController.create(film));
         assertEquals(0, filmController.returnFilms().size(), "Список должен быть пустым");
     }
 
     @Test
     public void addFilmWhenDurationNegative() {
         film.setDuration(-1);
-        assertThrows(ValidationException.class, () -> filmController.add(film));
+        assertThrows(ValidationException.class, () -> filmController.create(film));
         assertEquals(0, filmController.returnFilms().size(), "Список должен быть пустым");
     }
 
     @Test
     public void addFilmWhenFilmDescriptionMore200() {
         film.setDescription(new String(new char[203]));
-        assertThrows(ValidationException.class, () -> filmController.add(film));
+        assertThrows(ValidationException.class, () -> filmController.create(film));
         assertEquals(0, filmController.returnFilms().size(), "Список должен быть пустым");
     }
 
     @Test
     public void dateFilmMIN() {
         film.setReleaseDate(LocalDate.of(1796, 6, 15));
-        assertThrows(ValidationException.class, () -> filmController.add(film));
+        assertThrows(ValidationException.class, () -> filmController.create(film));
         assertEquals(0, filmController.returnFilms().size(), "Список должен быть пустым");
     }
 
     @Test
     public void setNameFilmIsNull() {
         film.setName("");
-        assertThrows(ValidationException.class, () -> filmController.add(film));
+        assertThrows(ValidationException.class, () -> filmController.create(film));
         assertEquals(0, filmController.returnFilms().size(), "Список должен быть пустым");
     }
 
     @Test
     public void setDescriptionFilmIsNull() {
         film.setDescription("");
-        assertThrows(ValidationException.class, () -> filmController.add(film));
+        assertThrows(ValidationException.class, () -> filmController.create(film));
         assertEquals(0, filmController.returnFilms().size(), "Список должен быть пустым");
     }
 

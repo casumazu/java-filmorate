@@ -12,7 +12,7 @@ public class User {
     private Integer id;
     @NotNull
     private String name;
-    @Email(message = "Email is not valid")
+    @Email(message = "Email введён не верно")
     private String email;
     @NotBlank
     private String login;
