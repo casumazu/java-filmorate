@@ -30,7 +30,6 @@ public class UserController {
         return new ArrayList<>(users.values());
     }
 
-
     @PostMapping
     public User add(@Valid @RequestBody User user) {
         log.info("Получен POST-запрос к эндпоинту -> /users, на добавление пользователя с ID={}", id + 1);

@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 @RestController
 @Slf4j
 @RequestMapping("/films")
@@ -30,7 +29,6 @@ public class FilmController {
         log.trace("Возвращены все фильмы.");
         return new ArrayList<>(films.values());
     }
-
 
     @PostMapping
     public Film add(@Valid @RequestBody Film film) {
@@ -54,7 +52,6 @@ public class FilmController {
         }
         return film;
     }
-
 
     private boolean isValid(Film film) {
         if (film.getName().isEmpty()) {
