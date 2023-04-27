@@ -44,9 +44,7 @@ public class FilmController {
     @PutMapping
     public Film update(@Valid @RequestBody Film film) {
         try {
-            if (!films.containsKey(film.getId())) {
-                throw new ValidationException("Такого фильма нет");
-            }
+
             if (isValid(film)) {
                 films.put(film.getId(), film);
                 log.trace("Фильм успешно обновлён: {}.", film);
