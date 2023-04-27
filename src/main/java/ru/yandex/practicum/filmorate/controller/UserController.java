@@ -27,28 +27,32 @@ public class UserController {
 
     @PostMapping
     public User create(@Valid @RequestBody User user) {
+
+        if (users.containsKey(user.getId())) {
+            throw new ValidationException("Данный пользователь уже существует");
+        }
+
         if (isValidUser(user)) {
             user.setId(id++);
             users.put(user.getId(), user);
             log.trace("Пользователь добавлен: {}.", user);
         }
-        log.trace("Количество пользователей: {}.", users.size());
         return user;
     }
 
     @PutMapping
     public User update(@Valid @RequestBody User user) {
         log.info("Получен PUT-запрос к эндпоинту: '/users' на обновление пользователя с ID={}", user.getId());
-        try {
-            if (isValidUser(user) || user.getId() == null) {
-                user.setId(id + 1);
-            }
-            if (isValidUser(user)) {
-                users.put(user.getId(), user);
-                id++;
-            }
-        } catch (ValidationException e) {
-            throw new ValidationException("Ошибка валидации");
+
+        if (!users.containsKey(user.getId())) {
+            throw new ValidationException("Такого фильма нет");
+        }
+        if (isValidUser(user) || user.getId() == null) {
+            user.setId(id + 1);
+        }
+        if (isValidUser(user)) {
+            users.put(user.getId(), user);
+            id++;
         }
         return user;
     }
@@ -63,7 +67,7 @@ public class UserController {
         if (user.getBirthday().isAfter(LocalDate.now())) {
             throw new ValidationException("Некорректная дата рождения: " + user.getBirthday());
         }
-        if (user.getName().isEmpty() || user.getName() == null) {
+        if (user.getName().isEmpty() || user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
         return true;
