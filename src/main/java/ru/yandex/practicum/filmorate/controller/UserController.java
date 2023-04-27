@@ -47,7 +47,6 @@ public class UserController {
         try {
             if (isValidUser(user)) {
                 users.put(user.getId(), user);
-                id++;
             }
         } catch (ValidationException e) {
             throw new ValidationException("Ошибка валидации");
