@@ -27,12 +27,12 @@ public class UserController {
 
     @PostMapping
     public User create(@Valid @RequestBody User user) {
-            if (isValidUser(user)) {
-                user.setId(id++);
-                users.put(user.getId(), user);
-                log.trace("Пользователь добавлен: {}.", user);
-            }
-            log.trace("Количество пользователей: {}.", users.size());
+        if (isValidUser(user)) {
+            user.setId(id++);
+            users.put(user.getId(), user);
+            log.trace("Пользователь добавлен: {}.", user);
+        }
+        log.trace("Количество пользователей: {}.", users.size());
         return user;
     }
 
@@ -40,7 +40,7 @@ public class UserController {
     public User update(@Valid @RequestBody User user) {
         log.info("Получен PUT-запрос к эндпоинту: '/users' на обновление пользователя с ID={}", user.getId());
         try {
-            if (isValidUser(user) ||user.getId() == null) {
+            if (isValidUser(user) || user.getId() == null) {
                 user.setId(id + 1);
             }
             if (isValidUser(user)) {
