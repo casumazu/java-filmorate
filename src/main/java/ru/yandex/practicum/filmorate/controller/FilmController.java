@@ -59,7 +59,7 @@ public class FilmController {
         }
         if (film.getDescription().length() > 200) {
             throw new ValidationException("Описание фильма должно быть пустым и не больше 200 символов: "
-                    + film.getDescription().length()); // ---
+                    + film.getDescription().length());
         }
         if ((film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28)))) {
             throw new ValidationException("Некорректная дата релиза фильма: " + film.getReleaseDate());
