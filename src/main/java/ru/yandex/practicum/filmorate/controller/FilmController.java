@@ -54,12 +54,12 @@ public class FilmController {
     }
 
     public boolean isValid(@NonNull Film film) throws ValidationException {
-        if (film.getName() == null || film.getName().isBlank()) {
+        if (film.getName() == null || film.getName().isBlank() || film.getName().isEmpty()) {
             throw new ValidationException("Название фильма не должно быть пустым!");
         }
-        if (film.getDescription().length() > 200 || (film.getDescription().isEmpty())) {
+        if (film.getDescription().length() > 200) {
             throw new ValidationException("Описание фильма должно быть пустым и не больше 200 символов: "
-                    + film.getDescription().length());
+                    + film.getDescription().length()); // ---
         }
         if ((film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28)))) {
             throw new ValidationException("Некорректная дата релиза фильма: " + film.getReleaseDate());
