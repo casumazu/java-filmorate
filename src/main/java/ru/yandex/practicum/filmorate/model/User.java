@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @Builder
 public class User {
     private Integer id;
-    @NotNull
+    @NotEmpty
     private String name;
     @Email(message = "Email введён не верно")
     private String email;
