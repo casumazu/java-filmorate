@@ -32,9 +32,8 @@ public class UserController {
             log.trace("Пользователь уже существует:{}.", user);
             throw new ValidationException("Данный пользователь уже существует");
         }
-
         if (isValidUser(user)) {
-            user.setId(id++);
+            user.setId(++id);
             users.put(user.getId(), user);
             log.trace("Пользователь добавлен: {}.", user);
         }
