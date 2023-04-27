@@ -28,10 +28,6 @@ public class UserController {
     @PostMapping
     public User create(@Valid @RequestBody User user) {
         log.info("Получен POST-запрос к эндпоинду -> /users на добавление пользователя с ID{}", id + 1);
-        if (users.containsKey(user.getId())) {
-            log.trace("Пользователь уже существует:{}.", user);
-            throw new ValidationException("Данный пользователь уже существует");
-        }
         if (isValidUser(user)) {
             user.setId(++id);
             users.put(user.getId(), user);
@@ -45,8 +41,9 @@ public class UserController {
 
         log.trace("Получен PUT-запрос к эндпоинту: '/users' на обновление пользователя с ID={}", user.getId());
         try {
-            if (isValidUser(user) || user.getId() == null) {
-                user.setId(id++);
+            if (users.containsKey(user.getId())) {
+                log.trace("Пользователь уже существует:{}.", user);
+                throw new ValidationException("Данный пользователь уже существует");
             }
             if (isValidUser(user)) {
                 users.put(user.getId(), user);
