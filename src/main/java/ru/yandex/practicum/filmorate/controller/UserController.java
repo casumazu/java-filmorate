@@ -27,19 +27,21 @@ public class UserController {
 
     @PostMapping
     public User create(@Valid @RequestBody User user) {
-        log.info("Получен POST-запрос к эндпоинту -> /users, на добавление пользователя с ID={}", id + 1);
         try {
             if (users.containsKey(user.getId())) {
-                throw new ValidationException("Такой пользователь уже существует");
+                throw new ValidationException("Данный пользователь уже существует");
             }
             if (isValidUser(user)) {
-                user.setId(++id);
+                user.setId(id++);
                 users.put(user.getId(), user);
-                log.trace("Пользователь добавлен.");
+                log.trace("Пользователь добавлен: {}.", user);
             }
-        } catch (ValidationException e) {
-            throw new ValidationException("Ошибка валидации");
-        }
+            } catch(ValidationException e){
+                log.trace("Пользователь не добавлен: {}.", e.getMessage());
+                throw new RuntimeException("Ошибка валидации: " + e.getMessage(), e);
+            } finally{
+                log.trace("Количество пользователей: {}.", users.size());
+            }
         return user;
     }
 
