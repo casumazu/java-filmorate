@@ -58,7 +58,7 @@ public class UserController {
     }
 
     private boolean isValidUser(User user) {
-        if (user.getEmail() == null || !user.getEmail().contains("@") ) {
+        if (user.getEmail() == null || !user.getEmail().contains("@")) {
             throw new ValidationException("Некорректный e-mail: " + user.getEmail());
         }
         if (user.getLogin() == null || user.getLogin().isEmpty() || user.getLogin().indexOf(' ') >= 0) {
