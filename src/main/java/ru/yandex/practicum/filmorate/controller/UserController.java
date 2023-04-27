@@ -53,7 +53,7 @@ public class UserController {
                 users.put(user.getId(), user);
                 id++;
             }
-        } catch (ValidationException e){
+        } catch (ValidationException e) {
             throw new ValidationException("Ошибка валидации");
         }
         return user;
