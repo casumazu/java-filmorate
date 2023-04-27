@@ -27,21 +27,12 @@ public class UserController {
 
     @PostMapping
     public User create(@Valid @RequestBody User user) {
-        try {
-            if (users.containsKey(user.getId())) {
-                throw new ValidationException("Данный пользователь уже существует");
-            }
             if (isValidUser(user)) {
                 user.setId(id++);
                 users.put(user.getId(), user);
                 log.trace("Пользователь добавлен: {}.", user);
             }
-        } catch (ValidationException e) {
-            log.trace("Пользователь не добавлен: {}.", e.getMessage());
-            throw new ValidationException("Ошибка валидации: " + e.getMessage());
-        } finally {
             log.trace("Количество пользователей: {}.", users.size());
-        }
         return user;
     }
 
@@ -49,7 +40,7 @@ public class UserController {
     public User update(@Valid @RequestBody User user) {
         log.info("Получен PUT-запрос к эндпоинту: '/users' на обновление пользователя с ID={}", user.getId());
         try {
-            if (user.getId() == null) {
+            if (isValidUser(user) ||user.getId() == null) {
                 user.setId(id + 1);
             }
             if (isValidUser(user)) {
