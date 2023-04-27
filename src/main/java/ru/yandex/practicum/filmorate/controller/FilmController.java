@@ -18,7 +18,6 @@ import java.util.Map;
 @RequestMapping("/films")
 public class FilmController {
     private Map<Integer, Film> films = new HashMap<>();
-    private Integer id = 0;
 
     @GetMapping
     public List<Film> getFilms() {
@@ -28,9 +27,8 @@ public class FilmController {
 
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
-        log.info("Получен POST-запрос к эндпоинду -> /films на добавление фильм с ID{}", id + 1);
+        log.info("Получен POST-запрос к эндпоинду -> /films на добавление фильм с ID{}", film.getId());
         if (isValid(film)) {
-            film.setId(++id);
             films.put(film.getId(), film);
         }
         return film;
