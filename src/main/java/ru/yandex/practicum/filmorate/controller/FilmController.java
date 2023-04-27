@@ -41,15 +41,21 @@ public class FilmController {
         return film;
     }
 
-    @PutMapping(value = "/films")
+    @PutMapping
     public Film update(@Valid @RequestBody Film film) {
-        log.info("Получен PUT-запрос к эндпоинту -> /films на обновление фильма с ID={}", film.getId());
-        if (film.getId() == null) {
-            film.setId(id + 1);
-        }
-        if (isValid(film)) {
-            films.put(film.getId(), film);
-            id++;
+        try {
+            if (!films.containsKey(film.getId())) {
+                throw new ValidationException("Такого фильма нет");
+            }
+            if (isValid(film)) {
+                films.put(film.getId(), film);
+                log.trace("Фильм успешно обновлён: {}.", film);
+            }
+        } catch (ValidationException e) {
+            log.trace("Не удалось обновить фильм: {}.", e.getMessage());
+            throw new RuntimeException("Ошибка валидации: " + e.getMessage(), e);
+        } finally {
+            log.trace("Количество фильмов: {}.", films.size());
         }
         return film;
     }
