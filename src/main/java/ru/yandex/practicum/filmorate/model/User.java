@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Data
 @Builder
 public class User {
-    @Positive
+
     private Integer id;
     @NotEmpty
     private String name;
