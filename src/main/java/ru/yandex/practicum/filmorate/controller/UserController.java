@@ -36,12 +36,12 @@ public class UserController {
                 users.put(user.getId(), user);
                 log.trace("Пользователь добавлен: {}.", user);
             }
-            } catch(ValidationException e){
-                log.trace("Пользователь не добавлен: {}.", e.getMessage());
-                throw new RuntimeException("Ошибка валидации: " + e.getMessage(), e);
-            } finally{
-                log.trace("Количество пользователей: {}.", users.size());
-            }
+        } catch (ValidationException e) {
+            log.trace("Пользователь не добавлен: {}.", e.getMessage());
+            throw new RuntimeException("Ошибка валидации: " + e.getMessage(), e);
+        } finally {
+            log.trace("Количество пользователей: {}.", users.size());
+        }
         return user;
     }
 
