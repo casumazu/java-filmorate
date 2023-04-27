@@ -38,6 +38,7 @@ public class FilmController {
 
     @PutMapping
     public Film update(@Valid @RequestBody Film film) {
+        log.info("Получен PUT-запрос к эндпоинду -> /films на изменения фильма с ID{}", film.getId());
         try {
             if (!films.containsKey(film.getId())) {
                 throw new ValidationException("Такого фильма нет");
