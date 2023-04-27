@@ -16,13 +16,8 @@ import java.util.Map;
 @Slf4j
 @RequestMapping("/users")
 public class UserController {
-    private Map<Integer, User> users;
-    private Integer id;
-
-    public UserController() {
-        id = 0;
-        users = new HashMap<>();
-    }
+    private Map<Integer, User> users = new HashMap<>();
+    private Integer id = 0;
 
     @GetMapping
     public List<User> getUsers() {
@@ -33,9 +28,17 @@ public class UserController {
     @PostMapping
     public User create(@Valid @RequestBody User user) {
         log.info("Получен POST-запрос к эндпоинту -> /users, на добавление пользователя с ID={}", id + 1);
-        if (isValidUser(user)) {
-            user.setId(++id);
-            users.put(user.getId(), user);
+        try {
+            if (users.containsKey(user.getId())) {
+                throw new ValidationException("Такой пользователь уже существует");
+            }
+            if (isValidUser(user)) {
+                user.setId(++id);
+                users.put(user.getId(), user);
+                log.trace("Пользователь добавлен.");
+            }
+        } catch (ValidationException e) {
+            throw new ValidationException("Ошибка валидации");
         }
         return user;
     }
@@ -43,12 +46,16 @@ public class UserController {
     @PutMapping
     public User update(@Valid @RequestBody User user) {
         log.info("Получен PUT-запрос к эндпоинту: '/users' на обновление пользователя с ID={}", user.getId());
-        if (user.getId() == null) {
-            user.setId(id + 1);
-        }
-        if (isValidUser(user)) {
-            users.put(user.getId(), user);
-            id++;
+        try {
+            if (user.getId() == null) {
+                user.setId(id + 1);
+            }
+            if (isValidUser(user)) {
+                users.put(user.getId(), user);
+                id++;
+            }
+        } catch (ValidationException e) {
+            throw new ValidationException("Ошибка валидации");
         }
         return user;
     }

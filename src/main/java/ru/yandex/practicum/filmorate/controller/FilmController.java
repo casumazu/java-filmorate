@@ -17,13 +17,8 @@ import java.util.Map;
 @Slf4j
 @RequestMapping("/films")
 public class FilmController {
-    private Map<Integer, Film> films;
-    private Integer id;
-
-    public FilmController() {
-        id = 0;
-        films = new HashMap<>();
-    }
+    private Map<Integer, Film> films = new HashMap<>();
+    private Integer id = 0;
 
     @GetMapping
     public List<Film> getFilms() {
@@ -44,16 +39,16 @@ public class FilmController {
     @PutMapping
     public Film update(@Valid @RequestBody Film film) {
         try {
-
+            if (!films.containsKey(film.getId())) {
+                throw new ValidationException("Такого фильма нет");
+            }
             if (isValid(film)) {
                 films.put(film.getId(), film);
                 log.trace("Фильм успешно обновлён: {}.", film);
             }
         } catch (ValidationException e) {
             log.trace("Не удалось обновить фильм: {}.", e.getMessage());
-            throw new RuntimeException("Ошибка валидации: " + e.getMessage(), e);
-        } finally {
-            log.trace("Количество фильмов: {}.", films.size());
+            throw new RuntimeException("Ошибка Valid: " + e.getMessage(), e);
         }
         return film;
     }
