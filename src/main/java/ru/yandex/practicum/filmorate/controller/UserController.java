@@ -17,7 +17,7 @@ import java.util.Map;
 @RequestMapping("/users")
 public class UserController {
     private Map<Integer, User> users = new HashMap<>();
-    private Integer id = 0;
+    private Integer id = 1;
 
     @GetMapping
     public List<User> getUsers() {
@@ -44,6 +44,7 @@ public class UserController {
     @PutMapping
     public User update(@Valid @RequestBody User user) {
         log.trace("Получен PUT-запрос к эндпоинту: '/users' на обновление пользователя с ID={}", user.getId());
+
         if (!users.containsKey(user.getId())) {
             throw new ValidationException("Такого фильма нет");
         }
