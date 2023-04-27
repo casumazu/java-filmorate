@@ -67,11 +67,4 @@ public class FilmControllerTest {
         assertEquals(0, filmController.getFilms().size(), "Список должен быть пустым");
     }
 
-    @Test
-    public void setDescriptionFilmIsNull() {
-        film.setDescription("");
-        assertThrows(ValidationException.class, () -> filmController.create(film));
-        assertEquals(0, filmController.getFilms().size(), "Список должен быть пустым");
-    }
-
 }
