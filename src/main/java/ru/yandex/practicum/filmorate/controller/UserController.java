@@ -21,14 +21,15 @@ public class UserController {
 
     @GetMapping
     public List<User> getUsers() {
-        log.info("Получен GET-запрос на получение данных всех пользователей");
+        log.trace("Получен GET-запрос на получение данных всех пользователей");
         return new ArrayList<>(users.values());
     }
 
     @PostMapping
     public User create(@Valid @RequestBody User user) {
-
+        log.info("Получен POST-запрос к эндпоинду -> /users на добавление пользователя с ID{}", id + 1);
         if (users.containsKey(user.getId())) {
+            log.trace("Пользователь уже существует:{}.", user);
             throw new ValidationException("Данный пользователь уже существует");
         }
 
@@ -42,8 +43,7 @@ public class UserController {
 
     @PutMapping
     public User update(@Valid @RequestBody User user) {
-        log.info("Получен PUT-запрос к эндпоинту: '/users' на обновление пользователя с ID={}", user.getId());
-
+        log.trace("Получен PUT-запрос к эндпоинту: '/users' на обновление пользователя с ID={}", user.getId());
         if (!users.containsKey(user.getId())) {
             throw new ValidationException("Такого фильма нет");
         }
