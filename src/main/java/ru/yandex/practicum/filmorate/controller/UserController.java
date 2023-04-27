@@ -38,7 +38,7 @@ public class UserController {
             }
         } catch (ValidationException e) {
             log.trace("Пользователь не добавлен: {}.", e.getMessage());
-            throw new RuntimeException("Ошибка валидации: " + e.getMessage(), e);
+            throw new ValidationException("Ошибка валидации: " + e.getMessage());
         } finally {
             log.trace("Количество пользователей: {}.", users.size());
         }
