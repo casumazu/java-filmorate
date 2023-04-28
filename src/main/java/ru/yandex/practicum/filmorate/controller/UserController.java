@@ -45,8 +45,10 @@ public class UserController {
 
         log.trace("Получен PUT-запрос к эндпоинту: '/users' на обновление пользователя с ID={}", user.getId());
         try {
-            if (isValidUser(user)) {
-                users.put(user.getId(), user);
+            if(users.containsKey(user.getId())) {
+                if (isValidUser(user)) {
+                    users.put(user.getId(), user);
+                }
             }
         } catch (ValidationException e) {
             throw new ValidationException("Ошибка валидации");
@@ -58,7 +60,7 @@ public class UserController {
         if (user.getEmail() == null || !user.getEmail().contains("@")) {
             throw new ValidationException("Некорректный e-mail: " + user.getEmail());
         }
-        if (user.getLogin() == null || user.getLogin().isEmpty() || user.getLogin().indexOf(' ') >= 0) {
+        if (user.getLogin() == null || user.getLogin().isEmpty() || user.getLogin().contains(" ")) {
             throw new ValidationException("Некорректный логин: " + user.getLogin());
         }
         if (user.getBirthday().isAfter(LocalDate.now())) {
