@@ -45,7 +45,7 @@ public class UserController {
 
         log.trace("Получен PUT-запрос к эндпоинту: '/users' на обновление пользователя с ID={}", user.getId());
         try {
-            if(users.containsKey(user.getId())) {
+            if (users.containsKey(user.getId())) {
                 if (isValidUser(user)) {
                     users.put(user.getId(), user);
                 }
