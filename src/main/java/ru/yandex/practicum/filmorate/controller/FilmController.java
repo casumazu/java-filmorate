@@ -49,21 +49,21 @@ public class FilmController {
             }
         } catch (ValidationException e) {
             log.trace("Не удалось обновить фильм: {}.", e.getMessage());
-            throw new RuntimeException("Ошибка Valid: " + e.getMessage(), e);
+            throw new ValidationException("Ошибка валидации");
         }
         return film;
     }
 
-    public boolean isValid(@NonNull Film film) throws ValidationException {
+    public boolean isValid(@NonNull Film film){
         if (film.getName() == null || film.getName().isBlank() || film.getName().isEmpty()) {
-            throw new ValidationException("Название фильма не должно быть пустым!");
+            throw new ValidationException("Название фильма не должно быть пустым.");
         }
         if (film.getDescription().length() > 200) {
-            throw new ValidationException("Описание фильма должно быть пустым и не больше 200 символов: "
+            throw new ValidationException("Описание фильма должно быть пустым или не больше 200 символов: "
                     + film.getDescription().length());
         }
         if ((film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28)))) {
-            throw new ValidationException("Некорректная дата релиза фильма: " + film.getReleaseDate());
+            throw new ValidationException("Некорректная дата выхода фильма: " + film.getReleaseDate());
         }
         if (film.getDuration() <= 0) {
             throw new ValidationException("Продолжительность должна быть положительной: " + film.getDuration());
