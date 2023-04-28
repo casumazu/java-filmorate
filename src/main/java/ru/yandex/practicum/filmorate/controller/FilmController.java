@@ -54,7 +54,7 @@ public class FilmController {
         return film;
     }
 
-    public boolean isValid(@NonNull Film film){
+    public boolean isValid(@NonNull Film film) {
         if (film.getName() == null || film.getName().isBlank() || film.getName().isEmpty()) {
             throw new ValidationException("Название фильма не должно быть пустым.");
         }
