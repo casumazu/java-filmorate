@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +33,7 @@ public class UserController {
             log.trace("Пользователь уже существует:{}.", user);
             throw new ValidationException("Данный пользователь уже существует");
         }
-        if (isValidUser(user)) {
+        if (isValid(user)) {
             user.setId(++id);
             users.put(user.getId(), user);
             log.trace("Пользователь добавлен: {}.", user);
@@ -48,9 +49,9 @@ public class UserController {
             if (!users.containsKey(user.getId())) {
                 throw new ValidationException("Пользователь не существует");
             }
-                if (isValidUser(user)) {
-                    users.put(user.getId(), user);
-                }
+            if (isValid(user)) {
+                users.put(user.getId(), user);
+            }
 
         } catch (ValidationException e) {
             throw new ValidationException("Ошибка валидации");
@@ -58,7 +59,7 @@ public class UserController {
         return user;
     }
 
-    private boolean isValidUser(User user) {
+    private boolean isValid(@NotNull User user) {
         if (user.getEmail() == null || !user.getEmail().contains("@")) {
             throw new ValidationException("Некорректный e-mail: " + user.getEmail());
         }
