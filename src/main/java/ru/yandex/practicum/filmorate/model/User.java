@@ -15,8 +15,6 @@ public class User {
     @Email(message = "Email введён не верно")
     private String email;
     @NotBlank
-    @NotEmpty
-    @NotNull
     private String login;
     @Past
     private LocalDate birthday;
