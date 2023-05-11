@@ -57,9 +57,6 @@ public class UserService {
         for (Long friend : common) {
             users.add(userStorage.getUser(friend));
         }
-        if (users.isEmpty()) {
-            log.info("Общих друзей нет");
-        }
         return users;
     }
 }
