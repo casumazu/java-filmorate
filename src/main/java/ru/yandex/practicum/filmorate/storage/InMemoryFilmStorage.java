@@ -3,8 +3,6 @@ package ru.yandex.practicum.filmorate.storage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
@@ -25,10 +23,11 @@ public class InMemoryFilmStorage implements FilmStorage {
     private final Map<Long, Film> films;
     private Long id;
 
-    public InMemoryFilmStorage(){
+    public InMemoryFilmStorage() {
         this.films = new HashMap<>();
         id = 0L;
     }
+
     @Override
     public List<Film> getFilms() {
         log.trace("Возвращены все фильмы.");
@@ -37,13 +36,14 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film create(@Valid @RequestBody Film film) {
-      log.info("Получен POST-запрос к эндпоинду -> /films на добавление фильм с ID{}", id + 1);
+        log.info("Получен POST-запрос к эндпоинду -> /films на добавление фильм с ID{}", id + 1);
         if (isValid(film)) {
             film.setId(++id);
             films.put(film.getId(), film);
         }
         return film;
     }
+
     @Override
     public Film update(@Valid @RequestBody Film film) {
         log.info("Получен PUT-запрос к эндпоинду -> /films на изменения фильма с ID{}", film.getId());
@@ -56,9 +56,9 @@ public class InMemoryFilmStorage implements FilmStorage {
                 log.trace("Фильм успешно обновлён: {}.", film);
             }
         } catch (ValidationException e) {
-           log.trace("Не удалось обновить фильм: {}.", e.getMessage());
+            log.trace("Не удалось обновить фильм: {}.", e.getMessage());
             throw new ValidationException("Ошибка валидации");
-        } catch (UserNotFoundException e){
+        } catch (UserNotFoundException e) {
             throw new FilmNotFoundException("Такого фильма не существует");
         }
         return film;
@@ -67,13 +67,12 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Film getFilmById(Long filmId) {
         log.info("Получен GET-запрос на получение фильма по ID {}", filmId);
-        if(!films.containsKey(filmId)){
+        if (!films.containsKey(filmId)) {
             log.trace("Не удалось получить фильм по ID фильм: {}.", filmId);
-            throw new FilmNotFoundException(HttpStatus.BAD_REQUEST,"Фильма с таким ID не существует");
+            throw new FilmNotFoundException(HttpStatus.BAD_REQUEST, "Фильма с таким ID не существует");
         }
         return films.get(filmId);
     }
-
 
     public boolean isValid(Film film) {
         if (film.getName() == null || film.getName().isBlank() || film.getName().isEmpty()) {

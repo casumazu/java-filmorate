@@ -2,16 +2,10 @@ package ru.yandex.practicum.filmorate.storage;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,10 +19,11 @@ public class InMemoryUserStorage implements UserStorage {
     private final Map<Long, User> usersStorage;
     private Long id;
 
-    public InMemoryUserStorage (){
+    public InMemoryUserStorage() {
         usersStorage = new HashMap<>();
         id = 0L;
     }
+
     @Override
     public List<User> getUsers() {
         log.trace("Получен GET-запрос на получение данных всех пользователей");
@@ -63,7 +58,7 @@ public class InMemoryUserStorage implements UserStorage {
             }
         } catch (ValidationException e) {
             throw new ValidationException("Ошибка валидации");
-        } catch (UserNotFoundException e){
+        } catch (UserNotFoundException e) {
             throw new UserNotFoundException("Пользователь не существует");
         }
         return user;
@@ -71,7 +66,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User getUser(Long userId) {
-        if(!usersStorage.containsKey(userId)){
+        if (!usersStorage.containsKey(userId)) {
             log.info("Пользователя с ID {} не существует", userId);
             throw new UserNotFoundException("Пользователь не найден");
         }
