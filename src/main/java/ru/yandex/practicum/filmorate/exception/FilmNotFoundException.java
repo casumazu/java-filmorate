@@ -6,13 +6,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @Slf4j
-public class FilmNotFoundException extends IllegalArgumentException{
+public class FilmNotFoundException extends IllegalArgumentException {
     public FilmNotFoundException(String message) {
         super(message);
         log.error(message);
     }
 
-    public FilmNotFoundException(HttpStatus status,String message) {
+    public FilmNotFoundException(HttpStatus status, String message) {
         super(message);
         log.error(message, status);
     }
