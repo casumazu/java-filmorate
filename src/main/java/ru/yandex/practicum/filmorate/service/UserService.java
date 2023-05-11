@@ -8,9 +8,12 @@ import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
+import javax.validation.ValidationException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -23,7 +26,10 @@ public class UserService {
     }
 
     public void addFriend(Long userId, Long friendId) {
-        if (userStorage.getUser(userId) != null) {
+        if (userId < 0 || friendId < 0) {
+            throw new UserNotFoundException("id пользователей отрицательные");
+        }
+        if (userStorage.getUser(userId) != null || userStorage.getUser(friendId) != null) {
             userStorage.getUser(userId).getFriends().add(friendId);
             userStorage.getUser(friendId).getFriends().add(userId);
         } else {
@@ -38,27 +44,23 @@ public class UserService {
     }
 
     public List<User> getFriends(Long userId) {
-        List<User> friends = new ArrayList<>();
-        if (!userStorage.getUser(userId).getFriends().isEmpty()) {
-            for (Long id : userStorage.getUser(userId).getFriends()) {
-                friends.add(userStorage.getUser(id));
-            }
-        }
-        return friends;
+        return userStorage.getUser(userId).getFriends().stream()
+                .map(userStorage::getUser)
+                .collect(Collectors.toList());
     }
 
     public List<User> getCommonFriends(Long userId, Long friendId) {
-        log.info("Получен запрос на получение общих друзей у {}ID и {}ID", userId, friendId);
+        Set<Long> friends = userStorage.getUser(userId).getFriends();
+        Set<Long> friendsOther = userStorage.getUser(friendId).getFriends();
+        List<Long> common = friends.stream()
+                .filter(friendsOther::contains)
+                .collect(Collectors.toList());
         List<User> users = new ArrayList<>();
-        Set<Long> friendsUser = userStorage.getUser(userId).getFriends();
-        friendsUser.retainAll(userStorage.getUser(friendId).getFriends());
-
-        if (!friendsUser.isEmpty()) {
-            for (Long id : friendsUser) {
-                users.add(userStorage.getUser(id));
-            }
-        } else {
-            log.info("Друзья не найдены.");
+        for (Long friend : common) {
+            users.add(userStorage.getUser(friend));
+        }
+        if (users.isEmpty()) {
+            log.info("Общих друзей нет");
         }
         return users;
     }
