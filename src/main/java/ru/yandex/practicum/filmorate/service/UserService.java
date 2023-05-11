@@ -48,12 +48,12 @@ public class UserService {
     }
 
     public List<User> getCommonFriends(Long userId, Long friendId) {
+        List<User> users = new ArrayList<>();
         Set<Long> friends = userStorage.getUser(userId).getFriends();
         Set<Long> friendsOther = userStorage.getUser(friendId).getFriends();
         List<Long> common = friends.stream()
                 .filter(friendsOther::contains)
                 .collect(Collectors.toList());
-        List<User> users = new ArrayList<>();
         for (Long friend : common) {
             users.add(userStorage.getUser(friend));
         }
