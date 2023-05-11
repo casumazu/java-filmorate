@@ -43,8 +43,6 @@ public class UserService {
             for (Long id : userStorage.getUser(userId).getFriends()) {
                 friends.add(userStorage.getUser(id));
             }
-        } else {
-            throw new UserNotFoundException("Друзья не найдены");
         }
         return friends;
     }

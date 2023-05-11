@@ -12,15 +12,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component
 @Slf4j
+@Component
 public class InMemoryUserStorage implements UserStorage {
 
     private final Map<Long, User> usersStorage;
     private Long id;
 
     public InMemoryUserStorage() {
-        usersStorage = new HashMap<>();
+        this.usersStorage = new HashMap<>();
         id = 0L;
     }
 
