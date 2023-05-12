@@ -22,8 +22,8 @@ public class UserControllerTest {
     private UserController userController;
 
     private UserStorage userStorage;
-    protected User user = new User(1L,"sergeev.bog@yandex.ru", "casumazu", "Bogdan",
-            LocalDate.of(2002,3,12), friends);
+    protected User user = new User(1L, "sergeev.bog@yandex.ru", "casumazu", "Bogdan",
+            LocalDate.of(2002, 3, 12), friends);
     private UserService userService;
 
     @BeforeEach
