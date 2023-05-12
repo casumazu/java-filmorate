@@ -3,13 +3,12 @@ package ru.yandex.practicum.filmorate.storage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestBody;
+
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -79,8 +78,7 @@ public class InMemoryFilmStorage implements FilmStorage {
             throw new ValidationException("Название фильма не должно быть пустым.");
         }
         if (film.getDescription().length() > 200) {
-            throw new ValidationException("Описание фильма должно быть пустым или не больше 200 символов: "
-                    + film.getDescription().length());
+            throw new ValidationException("Описание фильма должно быть пустым или не больше 200 символов: " + film.getDescription().length());
         }
         if ((film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28)))) {
             throw new ValidationException("Некорректная дата выхода фильма: " + film.getReleaseDate());
