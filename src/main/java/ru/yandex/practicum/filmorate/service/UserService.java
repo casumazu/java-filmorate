@@ -37,7 +37,7 @@ public class UserService {
     }
 
     public void removeFriend(Long userId, Long friendId) {
-        if(userStorage.getUser(userId) != null && userStorage.getUser(friendId) != null) {
+        if (userStorage.getUser(userId) != null && userStorage.getUser(friendId) != null) {
             User user = userStorage.getUser(userId);
             User user1 = userStorage.getUser(friendId);
             user.getFriends().remove(friendId);
