@@ -35,7 +35,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film create(@Valid @RequestBody Film film) {
+    public Film create(Film film) {
         log.info("Получен POST-запрос к эндпоинду -> /films на добавление фильм с ID{}", id + 1);
         if (isValid(film)) {
             film.setId(++id);
@@ -45,7 +45,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film update(@Valid @RequestBody Film film) {
+    public Film update(Film film) {
         log.info("Получен PUT-запрос к эндпоинду -> /films на изменения фильма с ID{}", film.getId());
         try {
             if (!films.containsKey(film.getId())) {

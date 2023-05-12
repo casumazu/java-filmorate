@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
@@ -28,31 +29,32 @@ public class FilmService {
     }
 
     public void addLikeFilm(Long filmId, Long userId) {
-        if (filmStorage.getFilmById(filmId) == null) {
+        Film film = filmStorage.getFilmById(filmId);
+        User user = userStorage.getUser(userId);
+        if (film == null) {
             log.info("Получен запрос на несуществующий фильм");
             throw new FilmNotFoundException("Фильма не найден");
         }
-        if (userStorage.getUser(userId) == null) {
+        if (user == null) {
             log.info("Получен запрос на несуществующего пользователя");
             throw new UserNotFoundException("Пользователь не найден");
         }
-        Film film = filmStorage.getFilmById(filmId);
-        film.getLikes().add(userStorage.getUser(userId).getId());
+        film.getLikes().add(user.getId());
     }
 
     public void deleteLike(Long filmId, Long userId) {
-        if (filmStorage.getFilmById(filmId) == null) {
+        Film film = filmStorage.getFilmById(filmId);
+        User user = userStorage.getUser(userId);
+        if (film == null) {
             log.info("Получен запрос на несуществующий фильм");
             throw new FilmNotFoundException(HttpStatus.NOT_FOUND, "Фильма не найден");
-
         }
-        if (userStorage.getUser(userId) == null) {
+        if (user == null) {
             log.info("Получен запрос на несуществующего пользователя");
             throw new UserNotFoundException(HttpStatus.NOT_FOUND, "Пользователь не найден");
         }
-        Film film = filmStorage.getFilmById(filmId);
         if (film.getLikes().contains(userId)) {
-            film.getLikes().remove(userStorage.getUser(userId).getId());
+            film.getLikes().remove(user.getId());
         } else {
             log.info("Лайк от пользователя не найден");
             throw new FilmNotFoundException("Пользователь не ставил лайк данному фильму");

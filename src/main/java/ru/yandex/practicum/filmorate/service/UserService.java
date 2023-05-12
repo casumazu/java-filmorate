@@ -27,7 +27,7 @@ public class UserService {
         if (userId < 0 || friendId < 0) {
             throw new UserNotFoundException("id пользователей отрицательные");
         }
-        if (userStorage.getUser(userId) != null || userStorage.getUser(friendId) != null) {
+        if (userStorage.getUser(userId) != null && userStorage.getUser(friendId) != null) {
             userStorage.getUser(userId).getFriends().add(friendId);
             userStorage.getUser(friendId).getFriends().add(userId);
         } else {
@@ -37,8 +37,12 @@ public class UserService {
     }
 
     public void removeFriend(Long userId, Long friendId) {
-        userStorage.getUser(userId).getFriends().remove(friendId);
-        userStorage.getUser(friendId).getFriends().remove(userId);
+        if(userStorage.getUser(userId) != null && userStorage.getUser(friendId) != null) {
+            User user = userStorage.getUser(userId);
+            User user1 = userStorage.getUser(friendId);
+            user.getFriends().remove(friendId);
+            user1.getFriends().remove(userId);
+        }
     }
 
     public List<User> getFriends(Long userId) {
@@ -48,12 +52,16 @@ public class UserService {
     }
 
     public List<User> getCommonFriends(Long userId, Long friendId) {
+        User user = userStorage.getUser(userId);
+        User user1 = userStorage.getUser(friendId);
+
         List<User> users = new ArrayList<>();
-        Set<Long> friends = userStorage.getUser(userId).getFriends();
-        Set<Long> friendsOther = userStorage.getUser(friendId).getFriends();
+        Set<Long> friends = user.getFriends();
+        Set<Long> friendsOther = user1.getFriends();
         List<Long> common = friends.stream()
                 .filter(friendsOther::contains)
                 .collect(Collectors.toList());
+
         for (Long friend : common) {
             users.add(userStorage.getUser(friend));
         }
