@@ -4,25 +4,32 @@ import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.controller.UserController;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class UserControllerTest {
-    private User user;
+
+    Set<Long> friends = new HashSet<>();
+
     private UserController userController;
+
+    private UserStorage userStorage;
+    protected User user = new User(1L, "sergeev.bog@yandex.ru", "casumazu", "Bogdan",
+            LocalDate.of(2002, 3, 12), friends);
+    private UserService userService;
 
     @BeforeEach
     public void beforeEach() {
-        userController = new UserController();
-        user = User.builder()
-                .name("Bogdan")
-                .login("casumazu")
-                .email("sergeev.bog@yandex.ru")
-                .birthday(LocalDate.of(2002, 3, 12))
-                .build();
+        userStorage = new InMemoryUserStorage();
+        userController = new UserController(userStorage, new UserService(userStorage));
     }
 
     @Test

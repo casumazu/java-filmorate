@@ -4,26 +4,30 @@ import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class FilmControllerTest {
 
-    private Film film;
+    Set<Long> likes = new HashSet<>();
     private FilmController filmController;
+
+    protected FilmStorage filmStorage;
+    protected FilmService filmService;
+    protected Film film = new Film(0L, "films", "Description", LocalDate.now(), 30, likes);
 
     @BeforeEach
     public void beforeEach() {
-        filmController = new FilmController();
-        film = Film.builder()
-                .name("Lorem ipsum")
-                .description("Lorem ipsum dolor sit amet")
-                .releaseDate(LocalDate.of(1997, 6, 26))
-                .duration(114)
-                .build();
+        filmStorage = new InMemoryFilmStorage();
+        filmController = new FilmController(filmStorage, filmService);
     }
 
     @Test
@@ -75,3 +79,4 @@ public class FilmControllerTest {
     }
 
 }
+
