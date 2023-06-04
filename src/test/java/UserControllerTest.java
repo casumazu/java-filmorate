@@ -9,22 +9,18 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class UserControllerTest {
 
-    Set<Long> friends = new HashSet<>();
-
     private UserController userController;
     private final JdbcTemplate jdbcTemplate;
 
     private UserDbStorage userStorage;
     protected User user = new User(1L, "sergeev.bog@yandex.ru", "casumazu", "Bogdan",
-            LocalDate.of(2002, 3, 12), friends);
+            LocalDate.of(2002, 3, 12));
     private UserService userService;
 
     public UserControllerTest(JdbcTemplate jdbcTemplate, UserService userService) {

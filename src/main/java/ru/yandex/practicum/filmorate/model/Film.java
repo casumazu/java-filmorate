@@ -21,7 +21,7 @@ public class Film {
     private LocalDate releaseDate;
     @PositiveOrZero
     private Integer duration;
-    private Mpa Mpa;
+    private Mpa mpa;
     private Set<Genre> genres = new HashSet<>();
 
     public Film(Long id, String name, String description, LocalDate releaseDate,
@@ -31,7 +31,7 @@ public class Film {
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
-        this.Mpa = Mpa;
+        this.mpa = Mpa;
         this.genres = genres;
     }
 }
