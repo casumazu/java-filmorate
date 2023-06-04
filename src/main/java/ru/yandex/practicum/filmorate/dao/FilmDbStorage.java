@@ -44,7 +44,7 @@ public class FilmDbStorage implements FilmStorage {
                 .description(resultSet.getString("description"))
                 .releaseDate(resultSet.getDate("release_date").toLocalDate())
                 .duration(resultSet.getInt("duration"))
-                .Mpa(mpaStorage.getMpaByID(resultSet.getInt("rating_id")))
+                .mpa(mpaStorage.getMpaByID(resultSet.getInt("rating_id")))
                 .genres(genreStorage.getFilmGenresToSet(resultSet.getLong("id")))
                 .build();
     }

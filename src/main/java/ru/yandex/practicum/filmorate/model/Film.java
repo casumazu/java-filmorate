@@ -25,13 +25,13 @@ public class Film {
     private Set<Genre> genres = new HashSet<>();
 
     public Film(Long id, String name, String description, LocalDate releaseDate,
-                Integer duration, Mpa Mpa, Set<Genre> genres) {
+                Integer duration, Mpa mpa, Set<Genre> genres) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
-        this.mpa = Mpa;
+        this.mpa = mpa;
         this.genres = genres;
     }
 }
