@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
@@ -22,7 +24,10 @@ public class FilmControllerTest {
 
     protected FilmStorage filmStorage;
     protected FilmService filmService;
-    protected Film film = new Film(0L, "films", "Description", LocalDate.now(), 30, likes);
+
+    protected Mpa Mpa;
+    protected Set<Genre> genres;
+    protected Film film = new Film(0L, "films", "Description", LocalDate.now(), 30, Mpa, genres);
 
     @BeforeEach
     public void beforeEach() {

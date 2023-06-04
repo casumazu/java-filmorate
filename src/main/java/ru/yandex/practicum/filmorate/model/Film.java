@@ -3,10 +3,14 @@ package ru.yandex.practicum.filmorate.model;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
+
+import lombok.Builder;
 import lombok.Data;
+
 import javax.validation.constraints.*;
 
 @Data
+@Builder
 public class Film {
     private Long id;
     @NotBlank
@@ -17,17 +21,17 @@ public class Film {
     private LocalDate releaseDate;
     @PositiveOrZero
     private Integer duration;
-    Set<Long> likes;
+    private Mpa Mpa;
+    private Set<Genre> genres = new HashSet<>();
 
-    public Film(Long id, String name, String description, LocalDate releaseDate, Integer duration, Set<Long> likes) {
+    public Film(Long id, String name, String description, LocalDate releaseDate,
+                Integer duration, Mpa Mpa, Set<Genre> genres) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
-        this.likes = likes;
-        if (likes == null) {
-            this.likes = new HashSet<>();
-        }
+        this.Mpa = Mpa;
+        this.genres = genres;
     }
 }

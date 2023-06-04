@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
@@ -16,11 +17,11 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
 
-    UserStorage userStorage;
-    UserService userService;
+    private final UserStorage userStorage;
+    private final UserService userService;
 
     @Autowired
-    public UserController(UserStorage userStorage, UserService userService) {
+    public UserController(@Qualifier("userDbStorage") UserStorage userStorage, UserService userService) {
         this.userStorage = userStorage;
         this.userService = userService;
     }
@@ -33,6 +34,11 @@ public class UserController {
     @PostMapping
     public User create(@Valid @RequestBody User user) {
         return userStorage.create(user);
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public User deleteUser(@Valid @PathVariable Long id) {
+        return userService.deleteUser(id);
     }
 
     @PutMapping

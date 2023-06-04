@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-@Component
+@Component("inMemoryFilmStorage")
 public class InMemoryFilmStorage implements FilmStorage {
 
     private final Map<Long, Film> films;
@@ -73,12 +73,18 @@ public class InMemoryFilmStorage implements FilmStorage {
         return films.get(filmId);
     }
 
+    @Override
+    public Film deleteFilm(Long id) {
+        return films.remove(id);
+    }
+
     public boolean isValid(Film film) {
         if (film.getName() == null || film.getName().isBlank() || film.getName().isEmpty()) {
             throw new ValidationException("Название фильма не должно быть пустым.");
         }
         if (film.getDescription().length() > 200) {
-            throw new ValidationException("Описание фильма должно быть пустым или не больше 200 символов: " + film.getDescription().length());
+            throw new ValidationException("Описание фильма должно быть пустым или не больше 200 символов: "
+                    + film.getDescription().length());
         }
         if ((film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28)))) {
             throw new ValidationException("Некорректная дата выхода фильма: " + film.getReleaseDate());
