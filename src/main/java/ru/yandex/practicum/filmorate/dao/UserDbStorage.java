@@ -44,41 +44,10 @@ public class UserDbStorage implements UserStorage {
         }
     }
 
-    private User mapRowToUser(ResultSet rs, int rowNum) throws SQLException {
-        return new User(
-                rs.getLong("id"),
-                rs.getString("email"),
-                rs.getString("login"),
-                rs.getString("name"),
-                rs.getDate("birthday").toLocalDate()
-        );
-    }
-
     @Override
     public List<User> getUsers() {
         String sql = "select * from users";
-        return jdbcTemplate.query(sql, (rs, RowNum) -> new User(
-                rs.getLong("id"),
-                rs.getString("email"),
-                rs.getString("login"),
-                rs.getString("name"),
-                rs.getDate("birthday").toLocalDate()));
-    }
-
-    private boolean isValid(User user) {
-        if (user.getEmail() == null || !user.getEmail().contains("@")) {
-            throw new ValidationException("Некорректный e-mail: " + user.getEmail());
-        }
-        if (user.getLogin() == null || user.getLogin().isEmpty() || user.getLogin().contains(" ")) {
-            throw new ValidationException("Некорректный логин: " + user.getLogin());
-        }
-        if (user.getBirthday().isAfter(LocalDate.now())) {
-            throw new ValidationException("Некорректная дата рождения: " + user.getBirthday());
-        }
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
-        return true;
+        return jdbcTemplate.query(sql, this::mapRowToUser);
     }
 
     @Override
@@ -177,5 +146,31 @@ public class UserDbStorage implements UserStorage {
         }
         assert intersection != null;
         return new ArrayList<>(intersection);
+    }
+
+    private boolean isValid(User user) {
+        if (user.getEmail() == null || !user.getEmail().contains("@")) {
+            throw new ValidationException("Некорректный e-mail: " + user.getEmail());
+        }
+        if (user.getLogin() == null || user.getLogin().isEmpty() || user.getLogin().contains(" ")) {
+            throw new ValidationException("Некорректный логин: " + user.getLogin());
+        }
+        if (user.getBirthday().isAfter(LocalDate.now())) {
+            throw new ValidationException("Некорректная дата рождения: " + user.getBirthday());
+        }
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        }
+        return true;
+    }
+
+    private User mapRowToUser(ResultSet rs, int rowNum) throws SQLException {
+        return new User(
+                rs.getLong("id"),
+                rs.getString("email"),
+                rs.getString("login"),
+                rs.getString("name"),
+                rs.getDate("birthday").toLocalDate()
+        );
     }
 }

@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.GenreStorage;
 import ru.yandex.practicum.filmorate.storage.MpaStorage;
@@ -17,7 +16,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Component("filmDbStorage")
 @Slf4j
@@ -52,15 +50,7 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public List<Film> getFilms() {
         String sql = "SELECT * FROM films";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> new Film(
-                rs.getLong("id"),
-                rs.getString("name"),
-                rs.getString("description"),
-                rs.getDate("release_Date").toLocalDate(),
-                rs.getInt("duration"),
-                mpaStorage.getMpaByID(rs.getInt("rating_id")),
-                genreStorage.getFilmGenresToSet(rs.getLong("id"))
-        ));
+        return jdbcTemplate.query(sql, this::mapRowToFilm);
     }
 
     @Override
@@ -69,17 +59,9 @@ public class FilmDbStorage implements FilmStorage {
             String sqlQuery = "insert into films (id, name, description, release_date, duration, rating_id) " +
                     "values (?, ?, ?, ?, ?, ?)";
             film.setId(++id);
-
             if (film.getGenres() != null) {
-                for (Genre genre : film.getGenres()) {
-                    genre.setName(genreStorage.getGenreByID(genre.getId()).getName());
-                }
-                Collection<Genre> sortGenres = film.getGenres().stream()
-                        .sorted(Comparator.comparing(Genre::getId))
-                        .collect(Collectors.toList());
-                film.setGenres(new LinkedHashSet<>(sortGenres));
+                genreStorage.setFilmGenres(film);
             }
-
             film.setMpa(mpaStorage.getMpaByID(film.getMpa().getId()));
             jdbcTemplate.update(sqlQuery,
                     film.getId(),
@@ -116,15 +98,9 @@ public class FilmDbStorage implements FilmStorage {
                     "id = ?, name = ?, description = ?, release_date = ?, duration = ?, rating_id = ?" +
                     "where id = ?";
             if (film.getGenres() != null) {
-                for (Genre genre : film.getGenres()) {
-                    genre.setName(genreStorage.getGenreByID(genre.getId()).getName());
-                }
-                Collection<Genre> sortGenres = film.getGenres().stream()
-                        .sorted(Comparator.comparing(Genre::getId))
-                        .collect(Collectors.toList());
-                film.setGenres(new LinkedHashSet<>(sortGenres));
+                genreStorage.setFilmGenres(film);
+                genreStorage.addGenreToFilm(film);
             }
-            genreStorage.addGenreToFilm(film);
             film.setMpa(mpaStorage.getMpaByID(film.getMpa().getId()));
             jdbcTemplate.update(sqlQuery,
                     film.getId(),
@@ -158,7 +134,8 @@ public class FilmDbStorage implements FilmStorage {
             throw new ValidationException("Название фильма не должно быть пустым.");
         }
         if (film.getDescription().length() > 200) {
-            throw new ValidationException("Описание фильма должно быть пустым или не больше 200 символов: " + film.getDescription().length());
+            throw new ValidationException("Описание фильма должно быть пустым или не больше 200 символов: " +
+                    film.getDescription().length());
         }
         if ((film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28)))) {
             throw new ValidationException("Некорректная дата выхода фильма: " + film.getReleaseDate());

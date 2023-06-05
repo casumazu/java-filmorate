@@ -11,9 +11,8 @@ import ru.yandex.practicum.filmorate.model.Genre;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -78,5 +77,17 @@ public class GenreStorage {
 
     public Set<Genre> getFilmGenresToSet(Long filmId) {
         return new HashSet<>(getFilmGenres(filmId));
+    }
+
+    public void setFilmGenres(Film film) {
+        if (film.getGenres() != null) {
+            for (Genre genre : film.getGenres()) {
+                genre.setName(getGenreByID(genre.getId()).getName());
+            }
+            Collection<Genre> sortGenres = film.getGenres().stream()
+                    .sorted(Comparator.comparing(Genre::getId))
+                    .collect(Collectors.toList());
+            film.setGenres(new LinkedHashSet<>(sortGenres));
+        }
     }
 }
