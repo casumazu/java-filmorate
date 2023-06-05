@@ -25,7 +25,8 @@ public class FilmControllerTest {
 
     protected Mpa mpa;
     protected Set<Genre> genres;
-    protected Film film = new Film(0L, "films", "Description", LocalDate.now(), 30, mpa, genres);
+    protected Film film = new Film(0L, "films", "Description",
+            LocalDate.now(), 30, mpa, genres);
 
     @BeforeEach
     public void beforeEach() {
