@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.storage.GenreStorage;
+import ru.yandex.practicum.filmorate.service.GenreService;
 
 import java.util.List;
 
@@ -15,22 +15,20 @@ import java.util.List;
 @Slf4j
 @RequestMapping("/genres")
 public class GenreContoller {
-    private final GenreStorage genreStorage;
+    private final GenreService genreService;
 
     @Autowired
-    public GenreContoller(GenreStorage genreStorage) {
-        this.genreStorage = genreStorage;
+    public GenreContoller(GenreService genreService) {
+        this.genreService = genreService;
     }
 
     @GetMapping(value = "/{id}")
     public Genre getGenreByID(@PathVariable Integer id) {
-        log.info("Получен GET-запрос на получение жанра по ID");
-        return genreStorage.getGenreByID(id);
+        return genreService.getGenreByID(id);
     }
 
     @GetMapping
     public List<Genre> getGenres() {
-        log.info("Получен запрос на получение фильма по ID");
-        return genreStorage.getGenre();
+        return genreService.getGenre();
     }
 }

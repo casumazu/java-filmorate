@@ -11,7 +11,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.Likes;
+import ru.yandex.practicum.filmorate.storage.LikesStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.List;
@@ -21,16 +21,15 @@ import java.util.List;
 public class FilmService {
     protected FilmStorage filmStorage;
     protected UserStorage userStorage;
-
-    protected Likes likes;
+    protected LikesStorage likesStorage;
 
     @Autowired
     public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage,
                        @Qualifier("userDbStorage") UserStorage userStorage,
-                       Likes likes) {
+                       LikesStorage likesStorage) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
-        this.likes = likes;
+        this.likesStorage = likesStorage;
     }
 
     public void addLikeFilm(Long filmId, Long userId) {
@@ -44,7 +43,7 @@ public class FilmService {
             log.info("Получен запрос на несуществующего пользователя");
             throw new UserNotFoundException("Пользователь не найден");
         }
-        likes.addLike(filmId, userId);
+        likesStorage.addLike(filmId, userId);
     }
 
     public void deleteLike(Long filmId, Long userId) {
@@ -58,8 +57,8 @@ public class FilmService {
             log.info("Получен запрос на несуществующего пользователя");
             throw new UserNotFoundException(HttpStatus.NOT_FOUND, "Пользователь не найден");
         }
-        if (likes.getLikes(filmId).contains(userId)) {
-            likes.getLikes(filmId).remove(user.getId());
+        if (likesStorage.getLikes(filmId).contains(userId)) {
+            likesStorage.getLikes(filmId).remove(user.getId());
         } else {
             log.info("Лайк от пользователя не найден");
             throw new FilmNotFoundException("Пользователь не ставил лайк данному фильму");
@@ -70,6 +69,6 @@ public class FilmService {
         if (count < 1) {
             throw new ValidationException("Количество фильмов не должно быть меньше 1");
         }
-        return likes.getPopular(count);
+        return likesStorage.getPopular(count);
     }
 }

@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.dao;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
@@ -55,6 +56,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film create(Film film) {
+        log.info("Получен запрос на создание фильма");
         if (isValid(film)) {
             String sqlQuery = "insert into films (id, name, description, release_date, duration, rating_id) " +
                     "values (?, ?, ?, ?, ?, ?)";
@@ -63,7 +65,7 @@ public class FilmDbStorage implements FilmStorage {
                 genreStorage.setFilmGenres(film);
             }
             film.setMpa(mpaStorage.getMpaByID(film.getMpa().getId()));
-            jdbcTemplate.update(sqlQuery,
+            int rowsAffected = jdbcTemplate.update(sqlQuery,
                     film.getId(),
                     film.getName(),
                     film.getDescription(),
@@ -71,21 +73,35 @@ public class FilmDbStorage implements FilmStorage {
                     film.getDuration(),
                     film.getMpa().getId()
             );
+            if (rowsAffected == 0) {
+                throw new FilmNotFoundException("Фильм не обновлён");
+            }
         }
         genreStorage.addGenreToFilm(film);
         return film;
     }
 
     public Film deleteFilm(Long id) {
+        log.info("Получен запрос на удаление фильма({})", id);
         Film film = getFilmById(id);
-        if (getFilmById(id) != null) {
-            SqlRowSet userRows = jdbcTemplate.queryForRowSet("select * from films where id = ?", id);
+        if (film != null) {
+            SqlRowSet filmRows = jdbcTemplate.queryForRowSet("select " +
+                    "id, " +
+                    "name, " +
+                    "description, " +
+                    "release_date, " +
+                    "duration, " +
+                    "rating_id " +
+                    "from films where id = ?", id);
             String sqlQuery = "delete from films where id = ?";
-            if (userRows.next()) {
-                jdbcTemplate.update(sqlQuery,
-                        film.getId());
-                return film;
-
+            if (filmRows.next()) {
+                try {
+                    return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToFilm, id);
+                } catch (EmptyResultDataAccessException e) {
+                    throw new FilmNotFoundException("Фильм не удалён");
+                }
+            } else {
+                throw new FilmNotFoundException("Фильм не найден");
             }
         }
         return film;
@@ -93,16 +109,18 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film update(Film film) {
+        log.info("Получен запрос на обновление фильма");
         if (getFilmById(film.getId()) != null || isValid(film)) {
-            String sqlQuery = "update films set " +
-                    "id = ?, name = ?, description = ?, release_date = ?, duration = ?, rating_id = ?" +
-                    "where id = ?";
+            String sqlQuery =
+                    "update films set " +
+                            "id = ?, name = ?, description = ?, release_date = ?, duration = ?, rating_id = ?" +
+                            "where id = ?";
             if (film.getGenres() != null) {
                 genreStorage.setFilmGenres(film);
                 genreStorage.addGenreToFilm(film);
             }
             film.setMpa(mpaStorage.getMpaByID(film.getMpa().getId()));
-            jdbcTemplate.update(sqlQuery,
+            int rowsAffected = jdbcTemplate.update(sqlQuery,
                     film.getId(),
                     film.getName(),
                     film.getDescription(),
@@ -111,6 +129,9 @@ public class FilmDbStorage implements FilmStorage {
                     film.getMpa().getId(),
                     film.getId()
             );
+            if (rowsAffected == 0) {
+                throw new FilmNotFoundException("Фильм не обновлён");
+            }
             return film;
         } else {
             throw new FilmNotFoundException("Обновляемый фильм не найден");
@@ -119,8 +140,8 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film getFilmById(Long filmId) {
-        SqlRowSet filmRows = jdbcTemplate.queryForRowSet("select * from films where id = ?", filmId);
-        String sqlQuery = "select * from films where id = ?";
+        String sqlQuery = "select id, name, description, release_date, duration, rating_id from films where id = ?";
+        SqlRowSet filmRows = jdbcTemplate.queryForRowSet(sqlQuery, filmId);
         if (filmRows.next()) {
             return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToFilm, filmId);
         } else {

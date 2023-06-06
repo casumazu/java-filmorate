@@ -28,10 +28,11 @@ public class GenreStorage {
         if (id <= 0) {
             throw new ValidationException("ID жанра меньше или ровно 0");
         }
-        SqlRowSet userRows = jdbcTemplate.queryForRowSet("select * from genres where id = ?", id);
         String str = "select * from genres where id = ?";
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet(str, id);
         if (userRows.first()) {
-            return jdbcTemplate.queryForObject(str, this::mapRowToGenre, id);
+            return jdbcTemplate.query(str, this::mapRowToGenre, id).stream().findFirst()
+                    .orElseThrow(() -> new GenreNotFoundException("Жанр не найден"));
         } else {
             log.info("Жанр с идентификатором {} не найден.", id);
             throw new GenreNotFoundException("Жанр не найден");
@@ -41,8 +42,8 @@ public class GenreStorage {
     public List<Genre> getFilmGenres(Long filmId) {
         String sql = "select genre_id, name FROM film_genres" +
                 " inner join genres ON genre_id = id where film_id = ?";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> new Genre(
-                rs.getInt("genre_id"), rs.getString("name")), filmId
+        return jdbcTemplate.query(sql, new Object[]{filmId}, (rs, rowNum) -> new Genre(
+                rs.getInt("genre_id"), rs.getString("name"))
         );
     }
 

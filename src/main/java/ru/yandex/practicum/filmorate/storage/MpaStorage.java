@@ -26,10 +26,11 @@ public class MpaStorage {
         if (id <= 0) {
             throw new ValidationException("ID MPA меньше или ровно 0");
         }
-        SqlRowSet userRows = jdbcTemplate.queryForRowSet("select * from ratings_MPA where id = ?", id);
         String sql = "select * from ratings_MPA where id = ?";
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet(sql, id);
         if (userRows.next()) {
-            return jdbcTemplate.queryForObject(sql, this::mapRowToRatingMPA, id);
+            return jdbcTemplate.query(sql, this::mapRowToRatingMPA, id).stream().findFirst()
+                    .orElseThrow(() -> new MpaNotFoundException("MPA не найден"));
         } else {
             log.info("MPA с идентификатором {} не найден.", id);
             throw new MpaNotFoundException("MPA не найден");
