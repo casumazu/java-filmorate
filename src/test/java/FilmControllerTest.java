@@ -4,12 +4,13 @@ import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -17,12 +18,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class FilmControllerTest {
 
-    Set<Long> likes = new HashSet<>();
     private FilmController filmController;
 
     protected FilmStorage filmStorage;
     protected FilmService filmService;
-    protected Film film = new Film(0L, "films", "Description", LocalDate.now(), 30, likes);
+
+    protected Mpa mpa;
+    protected Set<Genre> genres;
+    protected Film film = new Film(0L, "films", "Description",
+            LocalDate.now(), 30, mpa, genres);
 
     @BeforeEach
     public void beforeEach() {
@@ -77,6 +81,4 @@ public class FilmControllerTest {
         assertThrows(ValidationException.class, () -> filmController.create(film));
         assertEquals(0, filmController.getFilms().size(), "Список должен быть пустым");
     }
-
 }
-
